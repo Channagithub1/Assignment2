@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sudoku with Clock</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0 20px;
+      background-color: #f4f4f4;
+      transition: background-color 0.5s ease;
+    }
+    .sudoku-section {
+      width: 40%;
+    }
+    .clock-section {
+      width: 40%;
+      text-align: center;
+      position: relative;
+    }
+    .sudoku-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .sudoku-grid input {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    .clock {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    .pendulum {
+      position: absolute;
+      width: 10px;
+      height: 100px;
+      background-color: #000;
+      top: 50%;
+      left: 50%;
+      transform-origin: top;
+      animation: swing 1s infinite ease-in-out;
+      display: none;
+    }
+    @keyframes swing {
+      0% { transform: rotate(-15deg); }
+      50% { transform: rotate(15deg); }
+      100% { transform: rotate(-15deg); }
+    }
+    .question {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sudoku Section -->
+  <div class="sudoku-section">
+    <h2 id="step-title">Step 1 of 4: Sudoku</h2>
+    <div class="sudoku-grid">
+      <!-- 4x4 Sudoku inputs -->
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+      <input type="text" maxlength="1">
+    </div>
+    <button id="submit-step">Submit Step</button>
+  </div>
+
+  <!-- Clock Section -->
+  <div class="clock-section">
+    <div class="clock" id="clock">00:00:00</div>
+    <div class="pendulum" id="pendulum"></div>
+    <div class="question" id="question" style="display: none;">
+      <p id="question-text"></p>
+      <button onclick="yesOption()">Yes</button>
+      <button onclick="noOption()">No</button>
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+
+    // Clock Functionality
+    function updateClock() {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      document.getElementById('clock').innerText = time;
+    }
+    setInterval(updateClock, 1000);
+
+    // Handle Step Submission
+    document.getElementById('submit-step').addEventListener('click', () => {
+      if (currentStep === 1) {
+        alert('Step 1 complete!');
+        showQuestion("Do you want a pendulum on the clock?");
+      } else if (currentStep === 3) {
+        alert('Step 3 complete!');
+        showQuestion("Do you want to change the background color?");
+      } else {
+        alert(`Step ${currentStep} complete!`);
+      }
+
+      // Update Step
+      currentStep++;
+      if (currentStep <= 4) {
+        document.getElementById('step-title').innerText = `Step ${currentStep} of 4: Sudoku`;
+      } else {
+        document.getElementById('submit-step').disabled = true;
+        alert('All steps are complete!');
+      }
+    });
+
+    // Show Question
+    function showQuestion(questionText) {
+      document.getElementById('question-text').innerText = questionText;
+      document.getElementById('question').style.display = 'block';
+    }
+
+    // Handle Yes Option
+    function yesOption() {
+      const questionText = document.getElementById('question-text').innerText;
+
+      if (questionText.includes("pendulum")) {
+        document.getElementById('pendulum').style.display = 'block';
+      } else if (questionText.includes("background color")) {
+        document.body.style.backgroundColor = getRandomColor();
+      }
+
+      document.getElementById('question').style.display = 'none';
+    }
+
+    // Handle No Option
+    function noOption() {
+      document.getElementById('question').style.display = 'none';
+    }
+
+    // Generate Random Background Color
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+  </script>
+
+</body>
+</html>
